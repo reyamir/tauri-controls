@@ -39,7 +39,6 @@ export default defineConfig((configEnv) => ({
           "@tauri-apps/plugin-os": "pluginOs",
           clsx: "clsx",
           "tailwind-merge": "tailwindMerge",
-          "@tauri-apps/plugin-window": "pluginWindow",
         },
         intro: 'import "./style.css";',
         plugins: [terser()],

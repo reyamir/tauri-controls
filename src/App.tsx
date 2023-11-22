@@ -1,5 +1,4 @@
 import "./style.css"
-import React, { useState } from "react"
 import { WindowControls } from "./tauri-controls/window-controls"
 import { WindowTitlebar } from "./tauri-controls/window-titlebar"
 
