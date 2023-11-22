@@ -1,6 +1,6 @@
 import { getCurrent, type Window } from "@tauri-apps/api/window"
+import { type } from "@tauri-apps/plugin-os"
 import React, { createContext, useCallback, useEffect, useState } from "react"
-import { getOsType } from "../libs/plugin-os"
 
 interface TauriAppWindowContextType {
   appWindow: Window | null
@@ -49,11 +49,13 @@ export const TauriAppWindowProvider: React.FC<TauriAppWindowProviderProps> = ({
   }, [appWindow])
 
   useEffect(() => {
-    getOsType().then((osname) => {
+    let unlisten: () => void = () => {}
+
+    async function getOsType() {
+      const osname = await type()
       // temporary: https://github.com/agmmnn/tauri-controls/issues/10#issuecomment-1675884962
       if (osname !== "macos") {
         updateIsWindowMaximized()
-        let unlisten: () => void = () => {}
 
         const listen = async () => {
           if (appWindow) {
@@ -63,11 +65,13 @@ export const TauriAppWindowProvider: React.FC<TauriAppWindowProviderProps> = ({
           }
         }
         listen()
-
-        // Cleanup the listener when the component unmounts
-        return () => unlisten && unlisten()
       }
-    })
+    }
+
+    getOsType()
+
+    // Cleanup the listener when the component unmounts
+    return () => unlisten && unlisten()
   }, [appWindow, updateIsWindowMaximized])
 
   const minimizeWindow = async () => {
